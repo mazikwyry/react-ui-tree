@@ -78,7 +78,7 @@ module.exports = React.createClass({
       draggingDom,
       React.createElement(Node, {
         tree: tree,
-        index: tree.getIndex(1),
+        index: tree.getRoot(),
         key: 1,
         paddingLeft: this.props.paddingLeft,
         onDragStart: this.dragStart,
@@ -142,6 +142,8 @@ module.exports = React.createClass({
       // left
       if (index.parent && !index.next) {
         newIndex = tree.move(index.id, index.parent, 'after');
+        dragging.to = index.parent;
+        dragging.placement = 'after';
       }
     } else if (diffX > paddingLeft) {
       // right
@@ -149,6 +151,8 @@ module.exports = React.createClass({
         var prevNode = tree.getIndex(index.prev).node;
         if (!prevNode.collapsed && !prevNode.leaf) {
           newIndex = tree.move(index.id, index.prev, 'append');
+          dragging.to = index.prev;
+          dragging.placement = 'append';
         }
       }
     }
@@ -163,22 +167,32 @@ module.exports = React.createClass({
       // up
       var above = tree.getNodeByTop(index.top - 1);
       newIndex = tree.move(index.id, above.id, 'before');
+      dragging.to = above.id;
+      dragging.placement = 'before';
     } else if (diffY > dragging.h) {
       // down
       if (index.next) {
         var below = tree.getIndex(index.next);
         if (below.children && below.children.length && !below.node.collapsed) {
           newIndex = tree.move(index.id, index.next, 'prepend');
+          dragging.to = index.next;
+          dragging.placement = 'prepend';
         } else {
           newIndex = tree.move(index.id, index.next, 'after');
+          dragging.to = index.next;
+          dragging.placement = 'after';
         }
       } else {
         var below = tree.getNodeByTop(index.top + index.height);
         if (below && below.parent !== index.id) {
           if (below.children && below.children.length) {
             newIndex = tree.move(index.id, below.id, 'prepend');
+            dragging.to = below.id;
+            dragging.placement = 'prepend';
           } else {
             newIndex = tree.move(index.id, below.id, 'after');
+            dragging.to = below.id;
+            dragging.placement = 'after';
           }
         }
       }
@@ -195,23 +209,27 @@ module.exports = React.createClass({
     });
   },
   dragEnd: function dragEnd() {
+    var dragging = this.state.dragging;
     this.setState({
       dragging: {
         id: null,
         x: null,
         y: null,
         w: null,
-        h: null
+        h: null,
+        toId: null,
+        placement: null
       }
     });
 
-    this.change(this.state.tree);
+    this.change(this.state.tree, dragging);
     window.removeEventListener('mousemove', this.drag);
     window.removeEventListener('mouseup', this.dragEnd);
   },
-  change: function change(tree) {
+  change: function change(tree, dragging) {
     this._updated = true;
-    if (this.props.onChange) this.props.onChange(tree.obj);
+    console.log(dragging);
+    if (this.props.onChange) this.props.onChange(tree.obj, dragging.toId, dragging.placement);
   },
   toggleCollapse: function toggleCollapse(nodeId) {
     var tree = this.state.tree;

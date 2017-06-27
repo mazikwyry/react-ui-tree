@@ -54,7 +54,7 @@ var App = React.createClass({
     );
   },
 
-  handleChange(tree) {
+  handleChange(tree, toId, placement) {
     this.setState({
       tree: tree
     });
