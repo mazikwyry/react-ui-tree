@@ -222,14 +222,17 @@ module.exports = React.createClass({
       }
     });
 
-    this.change(this.state.tree, dragging);
+    this.change(this.state.tree, dragging.id, dragging.toId, dragging.placement);
     window.removeEventListener('mousemove', this.drag);
     window.removeEventListener('mouseup', this.dragEnd);
   },
-  change: function change(tree, dragging) {
+  change: function change(tree) {
+    var elementMoved = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var elementReferenced = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var placementType = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
     this._updated = true;
-    console.log(dragging);
-    if (this.props.onChange) this.props.onChange(tree.obj, dragging.toId, dragging.placement);
+    if (this.props.onChange) this.props.onChange(tree.obj, elementMoved, elementReferenced, placementType);
   },
   toggleCollapse: function toggleCollapse(nodeId) {
     var tree = this.state.tree;

@@ -7,6 +7,14 @@ var ReactDOM = require('react-dom');
 var Node = React.createClass({
   displayName: 'UITreeNode',
 
+  shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    var draggingParents = nextProps.tree.getParents(nextProps.dragging);
+
+    if (nextProps.dragging && nextProps.index.children && nextProps.index.children === this.props.index.children && !nextProps.index.children.includes(nextProps.dragging) && !draggingParents.includes(nextProps.index.id)) {
+      return false;
+    }
+    return true;
+  },
   renderCollapse: function renderCollapse() {
     var index = this.props.index;
 

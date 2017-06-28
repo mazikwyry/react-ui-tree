@@ -102,4 +102,17 @@ proto.getRoot = function () {
   return this.getIndex(this.obj.tree_item_id);
 };
 
+proto.getParents = function (nodeId) {
+  if (!nodeId) return [];
+  var node = this.getIndex(nodeId);
+  var parents = [];
+
+  while (node.parent) {
+    var parentId = node.parent;
+    parents.push(parentId);
+    node = this.getIndex(parentId);
+  }
+  return parents;
+};
+
 module.exports = Tree;
