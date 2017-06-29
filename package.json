@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "js-tree": "^1.1.0"
+    "js-tree": "^1.1.0",
+    "lodash": "^4.17.4"
   }
 }
