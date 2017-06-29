@@ -142,7 +142,7 @@ module.exports = React.createClass({
       // left
       if (index.parent && !index.next) {
         newIndex = tree.move(index.id, index.parent, 'after');
-        dragging.to = index.parent;
+        dragging.toId = index.parent;
         dragging.placement = 'after';
       }
     } else if (diffX > paddingLeft) {
@@ -151,7 +151,7 @@ module.exports = React.createClass({
         var prevNode = tree.getIndex(index.prev).node;
         if (!prevNode.collapsed && !prevNode.leaf) {
           newIndex = tree.move(index.id, index.prev, 'append');
-          dragging.to = index.prev;
+          dragging.toId = index.prev;
           dragging.placement = 'append';
         }
       }
@@ -167,7 +167,7 @@ module.exports = React.createClass({
       // up
       var above = tree.getNodeByTop(index.top - 1);
       newIndex = tree.move(index.id, above.id, 'before');
-      dragging.to = above.id;
+      dragging.toId = above.id;
       dragging.placement = 'before';
     } else if (diffY > dragging.h) {
       // down
@@ -175,11 +175,11 @@ module.exports = React.createClass({
         var below = tree.getIndex(index.next);
         if (below.children && below.children.length && !below.node.collapsed) {
           newIndex = tree.move(index.id, index.next, 'prepend');
-          dragging.to = index.next;
+          dragging.toId = index.next;
           dragging.placement = 'prepend';
         } else {
           newIndex = tree.move(index.id, index.next, 'after');
-          dragging.to = index.next;
+          dragging.toId = index.next;
           dragging.placement = 'after';
         }
       } else {
@@ -187,11 +187,11 @@ module.exports = React.createClass({
         if (below && below.parent !== index.id) {
           if (below.children && below.children.length) {
             newIndex = tree.move(index.id, below.id, 'prepend');
-            dragging.to = below.id;
+            dragging.toId = below.id;
             dragging.placement = 'prepend';
           } else {
             newIndex = tree.move(index.id, below.id, 'after');
-            dragging.to = below.id;
+            dragging.toId = below.id;
             dragging.placement = 'after';
           }
         }

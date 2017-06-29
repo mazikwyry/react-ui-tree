@@ -3,6 +3,7 @@
 var cx = require('classnames');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var lang = require('lodash/lang');
 
 var Node = React.createClass({
   displayName: 'UITreeNode',
@@ -10,7 +11,7 @@ var Node = React.createClass({
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
     var draggingParents = nextProps.tree.getParents(nextProps.dragging);
 
-    if (nextProps.dragging && nextProps.index.children && nextProps.index.children === this.props.index.children && !nextProps.index.children.includes(nextProps.dragging) && !draggingParents.includes(nextProps.index.id)) {
+    if (nextProps.dragging && nextProps.index.children && lang.isEqual(nextProps.index.children, this.props.index.children) && !nextProps.index.children.includes(nextProps.dragging) && !draggingParents.includes(nextProps.index.id)) {
       return false;
     }
     return true;
