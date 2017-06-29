@@ -2,15 +2,17 @@
 
 var Tree = require('js-tree');
 var proto = Tree.prototype;
+var lang = require('lodash/lang');
 
 proto.build = function (obj) {
+  var tree = lang.cloneDeep(obj);
   var indexes = this.indexes;
   var self = this;
 
-  var topLevel = { id: obj.tree_item_id, node: obj };
-  indexes[obj.tree_item_id + ''] = topLevel;
+  var topLevel = { id: tree.tree_item_id, node: tree };
+  indexes[tree.tree_item_id + ''] = topLevel;
 
-  if (obj.children && obj.children.length) walk(obj.children, topLevel);
+  if (tree.children && tree.children.length) walk(tree.children, topLevel);
 
   function walk(objs, parent) {
     var children = [];
@@ -78,8 +80,7 @@ proto.updateNodesPosition = function () {
 
 proto.move = function (fromId, toId, placement) {
   if (fromId === toId || toId === this.obj.tree_item_id) return;
-
-  var obj = this.remove(fromId);
+  var obj = lang.cloneDeep(this.remove(fromId));
   var index = null;
 
   if (placement === 'before') index = this.insertBefore(obj, toId);else if (placement === 'after') index = this.insertAfter(obj, toId);else if (placement === 'prepend') index = this.prepend(obj, toId);else if (placement === 'append') index = this.append(obj, toId);

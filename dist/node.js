@@ -8,16 +8,27 @@ var lang = require('lodash/lang');
 var Node = React.createClass({
   displayName: 'UITreeNode',
 
+  getInitialState: function getInitialState() {
+    return {
+      index: lang.clone(this.props.index)
+    };
+  },
+  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+    this.setState({
+      index: lang.clone(nextProps.index)
+    });
+  },
   shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
     var draggingParents = nextProps.tree.getParents(nextProps.dragging);
 
-    if (nextProps.dragging && nextProps.index.children && lang.isEqual(nextProps.index.children, this.props.index.children) && !nextProps.index.children.includes(nextProps.dragging) && !draggingParents.includes(nextProps.index.id)) {
+    if (nextProps.dragging && nextProps.index.children && lang.isEqual(nextProps.index.children, this.state.children) && !nextProps.index.children.includes(nextProps.dragging) && !draggingParents.includes(nextProps.index.id)) {
       return false;
     }
     return true;
   },
   renderCollapse: function renderCollapse() {
-    var index = this.props.index;
+    var index = this.state.index;
+
 
     if (index.children && index.children.length) {
       var collapsed = index.node.collapsed;
@@ -35,9 +46,11 @@ var Node = React.createClass({
   renderChildren: function renderChildren() {
     var _this = this;
 
-    var index = this.props.index;
-    var tree = this.props.tree;
-    var dragging = this.props.dragging;
+    var _props = this.props,
+        tree = _props.tree,
+        dragging = _props.dragging;
+    var index = this.state.index;
+
 
     if (index.children && index.children.length) {
       var childrenStyles = {};
@@ -65,9 +78,11 @@ var Node = React.createClass({
     return null;
   },
   render: function render() {
-    var tree = this.props.tree;
-    var index = this.props.index;
-    var dragging = this.props.dragging;
+    var _props2 = this.props,
+        tree = _props2.tree,
+        dragging = _props2.dragging;
+    var index = this.state.index;
+
     var node = index.node;
     var styles = {};
 
@@ -87,11 +102,15 @@ var Node = React.createClass({
   },
   handleCollapse: function handleCollapse(e) {
     e.stopPropagation();
-    var nodeId = this.props.index.id;
+    var index = this.state.index;
+
+    var nodeId = index.id;
     if (this.props.onCollapse) this.props.onCollapse(nodeId);
   },
   handleMouseDown: function handleMouseDown(e) {
-    var nodeId = this.props.index.id;
+    var index = this.state.index;
+
+    var nodeId = index.id;
     var dom = this.refs.inner;
 
     if (this.props.onDragStart) {

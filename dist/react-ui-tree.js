@@ -3,6 +3,7 @@
 var React = require('react');
 var Tree = require('./tree');
 var Node = require('./node');
+var lang = require('lodash/lang');
 
 module.exports = React.createClass({
   displayName: 'UITree',
@@ -43,8 +44,10 @@ module.exports = React.createClass({
     };
   },
   getDraggingDom: function getDraggingDom() {
-    var tree = this.state.tree;
-    var dragging = this.state.dragging;
+    var _state = this.state,
+        tree = _state.tree,
+        dragging = _state.dragging;
+
 
     if (dragging && dragging.id) {
       var draggingIndex = tree.getIndex(dragging.id);
@@ -68,8 +71,10 @@ module.exports = React.createClass({
     return null;
   },
   render: function render() {
-    var tree = this.state.tree;
-    var dragging = this.state.dragging;
+    var _state2 = this.state,
+        tree = _state2.tree,
+        dragging = _state2.dragging;
+
     var draggingDom = this.getDraggingDom();
 
     return React.createElement(
@@ -116,8 +121,10 @@ module.exports = React.createClass({
       this._start = false;
     }
 
-    var tree = this.state.tree;
     var dragging = this.state.dragging;
+
+    var tree = Object.assign(Object.create(Object.getPrototypeOf(this.state.tree)), this.state.tree);
+
     var paddingLeft = this.props.paddingLeft;
     var newIndex = null;
     var index = tree.getIndex(dragging.id);
@@ -209,7 +216,10 @@ module.exports = React.createClass({
     });
   },
   dragEnd: function dragEnd() {
-    var dragging = this.state.dragging;
+    var _state3 = this.state,
+        tree = _state3.tree,
+        dragging = _state3.dragging;
+
     this.setState({
       dragging: {
         id: null,
@@ -222,7 +232,7 @@ module.exports = React.createClass({
       }
     });
 
-    this.change(this.state.tree, dragging.id, dragging.toId, dragging.placement);
+    this.change(tree, dragging.id, dragging.toId, dragging.placement);
     window.removeEventListener('mousemove', this.drag);
     window.removeEventListener('mouseup', this.dragEnd);
   },
@@ -235,7 +245,7 @@ module.exports = React.createClass({
     if (this.props.onChange) this.props.onChange(tree.obj, elementMoved, elementReferenced, placementType);
   },
   toggleCollapse: function toggleCollapse(nodeId) {
-    var tree = this.state.tree;
+    var tree = Object.assign(Object.create(Object.getPrototypeOf(this.state.tree)), this.state.tree);
     var index = tree.getIndex(nodeId);
     var node = index.node;
     node.collapsed = !node.collapsed;
